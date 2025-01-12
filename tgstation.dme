@@ -6928,6 +6928,7 @@
 #include "modular_doppler\modular_cosmetics\GAGS\greyscale_configs_storage.dm"
 #include "modular_doppler\modular_cosmetics\GAGS\greyscale_configs_suit.dm"
 #include "modular_doppler\modular_cosmetics\GAGS\greyscale_configs_under.dm"
+#include "modular_doppler\modular_cosmetics\code\under\syndicate.dm"
 #include "modular_doppler\modular_crafting\code\crafting_extended.dm"
 #include "modular_doppler\modular_crafting\code\sheet_types.dm"
 #include "modular_doppler\modular_customization\accessories\code\hair.dm"
