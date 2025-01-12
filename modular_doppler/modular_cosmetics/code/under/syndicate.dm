@@ -4,3 +4,5 @@
 	icon_state = "syndicate_combat"
 	can_adjust = TRUE
 	supports_variations_flags = NONE
+	icon = 'icons/obj/clothing/under/syndicate.dmi'
+	worn_icon = 'modular_doppler/modular_cosmetics/icons/mob/under/syndicate.dmi'
