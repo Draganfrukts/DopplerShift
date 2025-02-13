@@ -148,11 +148,11 @@
 		STOP_PROCESSING(SSobj, src)
 		patient = null
 	ex_patient.adjustOxyLoss(-2 * seconds_per_tick)
-	ex_patient.AdjustStun(-40 * seconds_per_tick)
-	ex_patient.AdjustKnockdown(-40 * seconds_per_tick)
-	ex_patient.AdjustParalyzed(-40 * seconds_per_tick)
-	ex_patient.AdjustImmobilized(-40 * seconds_per_tick)
-	ex_patient.AdjustUnconscious(-40 * seconds_per_tick)
+	ex_patient.AdjustStun(-4 SECONDS * seconds_per_tick)
+	ex_patient.AdjustKnockdown(-4 SECONDS * seconds_per_tick)
+	ex_patient.AdjustParalyzed(-4 SECONDS * seconds_per_tick)
+	ex_patient.AdjustImmobilized(-4 SECONDS * seconds_per_tick)
+	ex_patient.AdjustUnconscious(-4 SECONDS * seconds_per_tick)
 	if(ex_patient.reagents.get_reagent_amount(/datum/reagent/medicine/epinephrine) < 5 \
 	&& ex_patient.reagents.get_reagent_amount(/datum/reagent/medicine/c2/penthrite) <= 0 \
 	&& ex_patient.stat >= SOFT_CRIT)
@@ -395,7 +395,7 @@
 
 /obj/item/mecha_parts/mecha_equipment/medical/mechmedbeam/process(deltatime)
 	. = ..()
-	if(.)
+	if(. || !length(chassis.occupants))
 		return
 	if(chassis.weapons_safety)
 		medigun.LoseTarget()

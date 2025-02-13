@@ -10,7 +10,8 @@
 	bonus_activate_text = span_notice("Carp DNA is deeply infused with you! You've learned how to propel yourself through space!")
 	bonus_deactivate_text = span_notice("Your DNA is once again mostly yours, and so fades your ability to space-swim...")
 	bonus_traits = list(TRAIT_SPACEWALK)
-	limb_overlay = /datum/bodypart_overlay/texture/carpskin
+	bonus_biotype = MOB_AQUATIC
+	//limb_overlay = /datum/bodypart_overlay/texture/carpskin -- DOPPLER EDIT CHANGE: No thanks on the really pretty gradient, Smartkar.
 	color_overlay_priority = LIMB_COLOR_CARP_INFUSION
 
 ///Carp lungs! You can breathe in space! Oh... you can't breathe on the station, you need low oxygen environments.
@@ -93,10 +94,15 @@
 	if(tooth_fairy)
 		new /obj/item/knife/carp(tooth_fairy)
 
+/obj/item/organ/tongue/carp/get_possible_languages()
+	. = ..()
+	. += /datum/language/carptongue
+
 /obj/item/knife/carp
 	name = "carp tooth"
 	desc = "Looks sharp. Sharp enough to poke someone's eye out. Holy fuck it's big."
 	icon_state = "carptooth"
+	icon_angle = -45
 
 ///carp brain. you need to occasionally go to a new zlevel. think of it as... walking your dog!
 /obj/item/organ/brain/carp

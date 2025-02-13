@@ -27,13 +27,41 @@
 	/// Fishing element for this specific water tile
 	var/datum/fish_source/fishing_datum = /datum/fish_source/river
 
+	/// Whether the immerse element has been added yet or not
+	var/immerse_added = FALSE
+
 /turf/open/water/Initialize(mapload)
 	. = ..()
-	AddElement(/datum/element/immerse, icon, icon_state, "immerse", immerse_overlay_color, alpha = immerse_overlay_alpha)
+	RegisterSignal(src, COMSIG_ATOM_AFTER_SUCCESSFUL_INITIALIZED_ON, PROC_REF(on_atom_inited))
 	AddElement(/datum/element/watery_tile)
 	if(!isnull(fishing_datum))
-		AddElement(/datum/element/lazy_fishing_spot, fishing_datum)
+		add_lazy_fishing(fishing_datum)
 	ADD_TRAIT(src, TRAIT_CATCH_AND_RELEASE, INNATE_TRAIT)
+
+///We lazily add the immerse element when something is spawned or crosses this turf and not before.
+/turf/open/water/proc/on_atom_inited(datum/source, atom/movable/movable)
+	SIGNAL_HANDLER
+	UnregisterSignal(src, COMSIG_ATOM_AFTER_SUCCESSFUL_INITIALIZED_ON)
+	if(immerse_added || is_type_in_typecache(movable, GLOB.immerse_ignored_movable))
+		return
+	AddElement(/datum/element/immerse, icon, icon_state, "immerse", immerse_overlay_color, alpha = immerse_overlay_alpha)
+	immerse_added = TRUE
+
+/turf/open/water/Destroy()
+	UnregisterSignal(src, COMSIG_ATOM_AFTER_SUCCESSFUL_INITIALIZED_ON)
+	return ..()
+
+/**
+ * turf/Initialize() calls Entered on its contents too, however
+ * we need to wait for movables that still need to be initialized
+ * before we add the immerse element.
+ */
+/turf/open/water/Entered(atom/movable/arrived)
+	. = ..()
+	if(immerse_added || is_type_in_typecache(arrived, GLOB.immerse_ignored_movable))
+		return
+	AddElement(/datum/element/immerse, icon, icon_state, "immerse", immerse_overlay_color, alpha = immerse_overlay_alpha)
+	immerse_added = TRUE
 
 /turf/open/water/jungle
 
@@ -64,6 +92,7 @@
 	icon_state = "tizira_water"
 	base_icon_state = "tizira_water"
 	baseturfs = /turf/open/water/beach/tizira
+	fishing_datum = /datum/fish_source/tizira
 
 /**
  * A special subtype of water with steam particles and a status effect similar to showers, that's however only applied if
@@ -81,33 +110,33 @@
 	immerse_overlay_alpha = 190
 	fishing_datum = /datum/fish_source/hot_spring
 	/// Holder for the steam particles
-	var/obj/effect/abstract/particle_holder/cached/steam_effect
+	var/obj/effect/abstract/particle_holder/cached/particle_effect
 
 /turf/open/water/hot_spring/Initialize(mapload)
 	. = ..()
+	// We need to add the immerse element now because the icon_states are randomized and
+	// we don't want to end up with 4 different immerse elements, which would cause
+	// the immerse trait to be repeatedly removed and readded as someone moves within the pool,
+	// replacing the status effect over and over, which can be seen through the status effect alert icon.
+	if(!immerse_added) // DOPPLER EDIT ADDITION
+		AddElement(/datum/element/immerse, icon, icon_state, "immerse", immerse_overlay_color, alpha = immerse_overlay_alpha) // DOPPLER EDIT JUST REMOVE ONE TAB BEFORE
+		immerse_added = TRUE // DOPPLER EDIT JUST REMOVE ONE TAB BEFORE
 	icon_state = "pool_[rand(1, 4)]"
-	steam_effect = new(src, /particles/hotspring_steam, 4)
+	particle_effect = new(src, /particles/hotspring_steam, 4)
 	//render the steam over mobs and objects on the game plane
-	steam_effect.vis_flags &= ~VIS_INHERIT_PLANE
+	particle_effect.vis_flags &= ~VIS_INHERIT_PLANE
 	//And be unaffected by ambient occlusions, which would render the steam grey
-	steam_effect.plane = MUTATE_PLANE(MASSIVE_OBJ_PLANE, src)
+	particle_effect.plane = MUTATE_PLANE(MASSIVE_OBJ_PLANE, src)
 	add_filter("hot_spring_waves", 1, wave_filter(y = 1, size = 1, offset = 0, flags = WAVE_BOUNDED))
 	var/filter = get_filter("hot_spring_waves")
 	animate(filter, offset = 1, time = 3 SECONDS, loop = -1, easing = SINE_EASING|EASE_IN|EASE_OUT)
-	animate(offset = -1, time = 3 SECONDS, easing = SINE_EASING|EASE_IN|EASE_OUT)
-
-	/**
-	 * turf/Initialize() calls Entered on its contents, however
-	 * we need to wait for movables that still need to be initialized.
-	 */
-	RegisterSignal(src, COMSIG_ATOM_AFTER_SUCCESSFUL_INITIALIZED_ON, PROC_REF(enter_initialized_movable))
+	animate(offset = 0, time = 3 SECONDS, easing = SINE_EASING|EASE_IN|EASE_OUT)
 
 /turf/open/water/hot_spring/Destroy()
-	QDEL_NULL(steam_effect)
+	QDEL_NULL(particle_effect)
 	remove_filter("hot_spring_waves")
 	for(var/atom/movable/movable as anything in contents)
 		exit_hot_spring(movable)
-	UnregisterSignal(src, COMSIG_ATOM_AFTER_SUCCESSFUL_INITIALIZED_ON)
 	return ..()
 
 /turf/open/water/hot_spring/Entered(atom/movable/arrived, atom/old_loc)
@@ -116,8 +145,7 @@
 		return
 	enter_hot_spring(arrived)
 
-/turf/open/water/hot_spring/proc/enter_initialized_movable(datum/source, atom/movable/movable)
-	SIGNAL_HANDLER
+/turf/open/water/hot_spring/on_atom_inited(datum/source, atom/movable/movable)
 	enter_hot_spring(movable)
 
 ///Registers the signals from the immerse element and calls dip_in if the movable has the required trait.

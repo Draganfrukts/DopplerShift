@@ -122,6 +122,7 @@
 	. = ..()
 	if(clickable_glow)
 		add_filter("clickglow", 2, outline_filter(color = COLOR_GOLD, size = 1))
+		mouse_over_pointer = MOUSE_HAND_POINTER
 
 /atom/movable/screen/alert/MouseEntered(location,control,params)
 	. = ..()
@@ -265,8 +266,7 @@
 		return
 
 	var/mob/living/carbon/carbon_owner = owner
-
-	return carbon_owner.help_shake_act(carbon_owner)
+	return carbon_owner.check_self_for_injuries()
 
 /atom/movable/screen/alert/negative
 	name = "Negative Gravity"
@@ -318,7 +318,7 @@ or shoot a gun to move around via Newton's 3rd Law of Motion."
 	/// The offer we're linked to, yes this is suspiciously like a status effect alert
 	var/datum/status_effect/offering/offer
 	/// Additional text displayed in the description of the alert.
-	var/additional_desc_text = "Click this alert to take it, or shift click it to examiante it."
+	var/additional_desc_text = "Click this alert to take it, or shift click it to examine it."
 	/// Text to override what appears in screentips for the alert
 	var/screentip_override_text
 	/// Whether the offered item can be examined by shift-clicking the alert
@@ -498,19 +498,6 @@ or shoot a gun to move around via Newton's 3rd Law of Motion."
 		"All Good Things Must End"
 	)
 
-/atom/movable/screen/alert/succumb/Initialize(mapload, datum/hud/hud_owner)
-	. = ..()
-	register_context()
-
-/atom/movable/screen/alert/succumb/add_context(atom/source, list/context, obj/item/held_item, mob/user)
-	context[SCREENTIP_CONTEXT_LMB] = "Succumb With Last Words"
-	context[SCREENTIP_CONTEXT_RMB] = "Succumb Silently"
-	return CONTEXTUAL_SCREENTIP_SET
-
-#define FASTSUCCUMB_YES "Yes"
-#define FASTSUCCUMB_WAIT "Wait, I have last words!"
-#define FASTSUCCUMB_NO "No"
-
 /atom/movable/screen/alert/succumb/Click(location, control, params)
 	. = ..()
 	if(!.)
@@ -521,17 +508,6 @@ or shoot a gun to move around via Newton's 3rd Law of Motion."
 
 	var/title = pick(death_titles)
 
-	if(LAZYACCESS(params2list(params), RIGHT_CLICK))
-		//Succumbing without a message
-		var/choice = tgui_alert(living_owner, "Are you sure you want to succumb?", title, list(FASTSUCCUMB_YES, FASTSUCCUMB_WAIT, FASTSUCCUMB_NO))
-		switch(choice)
-			if(FASTSUCCUMB_NO, null)
-				return
-			if(FASTSUCCUMB_YES)
-				living_owner.succumb()
-				return
-			//if(FASTSUCCUMB_WAIT), we continue to last words
-
 	//Succumbing with a message
 	var/last_whisper = tgui_input_text(usr, "Do you have any last words?", title, max_length = CHAT_MESSAGE_MAX_LENGTH, encode = FALSE) // saycode already handles sanitization
 	if(isnull(last_whisper))
@@ -540,9 +516,6 @@ or shoot a gun to move around via Newton's 3rd Law of Motion."
 		living_owner.say("#[last_whisper]")
 	living_owner.succumb(whispered = length(last_whisper) > 0)
 
-#undef FASTSUCCUMB_NO
-#undef FASTSUCCUMB_WAIT
-#undef FASTSUCCUMB_YES
 //ALIENS
 
 /atom/movable/screen/alert/alien_plas
@@ -1162,7 +1135,7 @@ or shoot a gun to move around via Newton's 3rd Law of Motion."
 		return FALSE
 	var/list/modifiers = params2list(params)
 	if(LAZYACCESS(modifiers, SHIFT_CLICK)) // screen objects don't do the normal Click() stuff so we'll cheat
-		to_chat(usr, examine_block(jointext(examine(usr), "\n")))
+		to_chat(usr, boxed_message(jointext(examine(usr), "\n")))
 		return FALSE
 	var/datum/our_master = master_ref?.resolve()
 	if(our_master && click_master)

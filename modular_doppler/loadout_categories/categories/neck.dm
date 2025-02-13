@@ -18,6 +18,14 @@
 	name = "Ranger Poncho"
 	item_path = /obj/item/clothing/neck/ranger_poncho
 
+/datum/loadout_item/neck/hazard_mantle
+	name = "Hazard Mantle"
+	item_path = /obj/item/clothing/neck/doppler_mantle
+
+/datum/loadout_item/neck/hazard_mantle_light
+	name = "Hazard Mantle (Light)"
+	item_path = /obj/item/clothing/neck/doppler_mantle/light
+
 /datum/loadout_item/neck/face_scarf
 	name = "Face Scarf"
 	item_path = /obj/item/clothing/neck/face_scarf
@@ -53,3 +61,7 @@
 /datum/loadout_item/neck/collar/spike
 	name = "Spiked Collar"
 	item_path = /obj/item/clothing/neck/human_petcollar/locked/spike
+
+/datum/loadout_item/neck/bowtie
+	name = "Bowtie (Colorable)"
+	item_path = /obj/item/clothing/neck/bowtie
