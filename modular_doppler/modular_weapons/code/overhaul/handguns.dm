@@ -7,7 +7,7 @@
 	icon = 'modular_doppler/modular_weapons/icons/overhaul/handguns.dmi'
 	icon_state = "stalwart"
 
-/obj/item/gun/ballistic/automatic/pistol//examine_more(mob/user)
+/obj/item/gun/ballistic/automatic/pistol/examine_more(mob/user)
 	. = ..()
 	. += span_notice("Xin-Jang Armories' Mk. I Stalwart - originally known as the Type-11 - is a run of the mill self-loading pistol made for civilian and law enforcement use.\
 	The Stalwart is the final iteration of a line of reasonably priced self defense handguns, making up a good chunk of the Marsian company's yearly revenue in bulk orders.\
@@ -28,3 +28,23 @@
 	The Osprey is significantly larger and heavier than other contemporary military pistols, earning it a favored spot with exoskeleton users and pretentious mercenaries above all.\
 	The proprietary 7.5×30mm cartridge is claimed to have an effective range—in terms of accuracy and terminal ballistics—of at least 100 meters for targets of up to 150 kg while maintaining relatively low recoil and good controllability.\
 	This particular model, the Osprey Longslide, is a common choice for criminals and users of large frames due to it's massive profile and it's menacing presence.")
+
+/obj/item/gun/ballistic/automatic/pistol/clandestine/fisher
+	name = "\improper Ansem/SC pistol"
+	desc = "A modified variant of the Ansem, spiritual successor to the Makarov, featuring an integral suppressor and push-button trigger on the grip \
+	for an underbarrel-mounted disruptor, similar in operation to the standalone SC/FISHER. Chambered in 10mm."
+	desc_controls = "Right-click to use the underbarrel disruptor. Two shots maximum between self-charges."
+	icon_state = "pistol_evil_fisher"
+	suppressed = TRUE
+	can_suppress = FALSE
+	can_unsuppress = FALSE
+	var/obj/item/gun/energy/recharge/fisher/underbarrel
+
+/obj/item/gun/ballistic/automatic/pistol/clandestine/fisher/examine_more(mob/user)
+	. = ..()
+	. += span_notice("The Ansem/SC is a Scarborough Arms-manufactured overhaul suite for the also Scarborough Arms-manufactured Ansem handgun, designed for special \
+	operators who like to operate operationally, and/or people who really, really hate lightbulbs, and tend to fight people who really like lightbulbs. \
+	The slide is lengthened and has an integrated suppressor, while a compact kinetic light disruptor was mounted underneath the barrel. \
+	Scarborough Arms has never actually officially responded to allegations that they're involved with the modification and/or manufacture \
+	of the SC/FISHER or similar disruptor weapons. Operators are reminded that kinetic light disruptors do not actually physically harm targets.<br>\
+	Caveat emptor.")
