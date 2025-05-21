@@ -17,7 +17,7 @@
 	user.gain_trauma(/datum/brain_trauma/severe/narcolepsy/permanent, TRAUMA_RESILIENCE_ABSOLUTE)
 
 	var/obj/item/storage/pill_bottle/prescription_stimulant/stimmies = new()
-	if(quirk_holder.equip_to_slot_if_possible(stimmies, ITEM_SLOT_BACKPACK, qdel_on_fail = TRUE, initial = TRUE, indirect_action = TRUE))
+	if(quirk_holder.equip_to_storage(stimmies, ITEM_SLOT_BACK, indirect_action = TRUE, del_on_fail = TRUE))
 		to_chat(quirk_holder, span_info("You have been given a bottle of mild stimulants to assist in staying awake this shift..."))
 
 /datum/quirk/narcolepsy/remove()
@@ -56,12 +56,9 @@
 /obj/item/storage/pill_bottle/prescription_stimulant
 	name = "bottle of prescribed stimulant pills"
 	desc = "A bottle of mild and medicinally approved stimulants to help prevent drowsiness."
+	spawn_type = /obj/item/reagent_containers/applicator/pill/prescription_stimulant
 
-/obj/item/storage/pill_bottle/prescription_stimulant/PopulateContents()
-	for(var/i in 1 to 5)
-		new /obj/item/reagent_containers/pill/prescription_stimulant(src)
-
-/obj/item/reagent_containers/pill/prescription_stimulant
+/obj/item/reagent_containers/applicator/pill/prescription_stimulant
 	name = "prescription stimulant pill"
 	desc = "Used to treat symptoms of drowsiness and sudden loss of consciousness. A warning label reads: <b>Take in moderation</b>."
 	list_reagents = list(/datum/reagent/consumable/sugar = 5, /datum/reagent/medicine/synaptizine = 5, /datum/reagent/medicine/modafinil = 3)

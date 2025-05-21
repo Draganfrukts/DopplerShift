@@ -9,7 +9,6 @@
 /datum/loadout_item/pocket_items/wallet
 	name = "Wallet"
 	item_path = /obj/item/storage/wallet
-	additional_displayed_text = list("Auto-Filled")
 
 // We add our wallet manually, later, so no need to put it in any outfits.
 /datum/loadout_item/pocket_items/wallet/insert_path_into_outfit(datum/outfit/outfit, mob/living/carbon/human/equipper, visuals_only)
@@ -45,7 +44,7 @@
 				if(thing.w_class <= WEIGHT_CLASS_SMALL)
 					wallet.atom_storage.attempt_insert(src, thing, equipper, TRUE, FALSE)
 	else
-		if(!equipper.equip_to_slot_if_possible(wallet, slot = ITEM_SLOT_BACKPACK, initial = TRUE))
+		if(!equipper.equip_to_storage(wallet, ITEM_SLOT_BACK, indirect_action = TRUE))
 			wallet.forceMove(equipper.drop_location())
 
 /*
@@ -75,10 +74,6 @@
 /datum/loadout_item/pocket_items/lipstick_purple
 	name = "Purple Lipstick"
 	item_path = /obj/item/lipstick/purple
-
-/datum/loadout_item/pocket_items/lipstick_red
-	name = "Red Lipstick"
-	item_path = /obj/item/lipstick
 
 /*
 *	GUM
@@ -148,10 +143,6 @@
 	name = "Cheap Lighter"
 	item_path = /obj/item/lighter/greyscale
 
-/datum/loadout_item/pocket_items/zippolighter
-	name = "Zippo Lighter"
-	item_path = /obj/item/lighter
-
 /datum/loadout_item/pocket_items/paicard
 	name = "Personal AI Device"
 	item_path = /obj/item/pai_card
@@ -208,6 +199,10 @@
 	name = "Meditative Assistance pacification skillchip"
 	item_path = /obj/item/skillchip/pacification
 
+/datum/loadout_item/pocket_items/shock_collar
+	name = "Shock collar"
+	item_path = /obj/item/electropack/shockcollar
+
 /*
 *	UTILITY
 */
@@ -260,6 +255,16 @@
 	name = "Kronkus Vine Seeds"
 	item_path = /obj/item/seeds/kronkus
 
+/datum/loadout_item/pocket_items/ahabs_spear
+	name = "Ahab's Spear Retool Kit"
+	item_path = /obj/item/crusher_trophy/retool_kit/ahab
+	restricted_roles = list(JOB_SHAFT_MINER)
+
+/datum/loadout_item/pocket_items/crusher_retool_kit
+	name = "Crusher Retool Kit"
+	item_path = /obj/item/crusher_trophy/retool_kit
+	restricted_roles = list(JOB_SHAFT_MINER)
+
 /*
 *	MEDICAL
 */
@@ -309,3 +314,25 @@
 /datum/loadout_item/pocket_items/security_suit_strap
 	name = "Security Equipment Strap"
 	item_path = /obj/item/job_equipment_strap/security
+
+//PDAs
+
+/datum/loadout_item/pocket_items/pda_neko
+	name = "Neko PDA"
+	item_path = /obj/item/modular_computer/pda/cat
+
+/datum/loadout_item/pocket_items/pda_g3
+	name = "G3 PDA"
+	item_path = /obj/item/modular_computer/pda/g3
+
+/datum/loadout_item/pocket_items/pda_rugged
+	name = "Rugged PDA"
+	item_path = /obj/item/modular_computer/pda/rugged
+
+/datum/loadout_item/pocket_items/pda_slimline
+	name = "Slimline PDA"
+	item_path = /obj/item/modular_computer/pda/slimline
+
+/datum/loadout_item/pocket_items/pda_ultraslim
+	name = "Ultraslim PDA"
+	item_path = /obj/item/modular_computer/pda/ultraslim

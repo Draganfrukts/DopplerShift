@@ -6,19 +6,34 @@
 	category_name = "Hands"
 	category_ui_icon = FA_ICON_HAND
 	type_to_generate = /datum/loadout_item/gloves
-	tab_order = /datum/loadout_category/feet::tab_order + 1
+	tab_order = /datum/loadout_category/shoes::tab_order + 1
 
 /datum/loadout_item/gloves
 	abstract_type = /datum/loadout_item/gloves
 
-/datum/loadout_item/gloves/insert_path_into_outfit(datum/outfit/outfit, mob/living/carbon/human/equipper, visuals_only = FALSE)
-	if(outfit.gloves)
-		LAZYADD(outfit.backpack_contents, outfit.gloves)
-	outfit.gloves = item_path
+/datum/loadout_item/gloves/insert_path_into_outfit(datum/outfit/outfit, mob/living/carbon/human/equipper, visuals_only = FALSE, override_items = LOADOUT_OVERRIDE_BACKPACK)
+	if(override_items == LOADOUT_OVERRIDE_BACKPACK && !visuals_only)
+		if(outfit.gloves)
+			LAZYADD(outfit.backpack_contents, outfit.gloves)
+		outfit.gloves = item_path
+	else
+		outfit.gloves = item_path
 
 /datum/loadout_item/gloves/fingerless
 	name = "Fingerless Gloves"
 	item_path = /obj/item/clothing/gloves/fingerless
+
+/datum/loadout_item/gloves/gold_gauntlets
+	name = "Gold-Plate Gauntlets"
+	item_path = /obj/item/clothing/gloves/tajaran_gloves
+
+/datum/loadout_item/gloves/alloy_gauntlets
+	name = "Alloy Gauntlets"
+	item_path = /obj/item/clothing/gloves/vulp_gloves
+
+/datum/loadout_item/gloves/tizirian_gauntlets
+	name = "Tizirian Gauntlets"
+	item_path = /obj/item/clothing/gloves/lizard_gloves
 
 /datum/loadout_item/gloves/black
 	name = "Black Gloves"
