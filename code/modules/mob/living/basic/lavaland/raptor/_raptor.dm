@@ -38,6 +38,10 @@ GLOBAL_LIST_EMPTY(raptor_population)
 	attack_sound = 'sound/items/weapons/punch1.ogg'
 	faction = list(FACTION_RAPTOR, FACTION_NEUTRAL)
 	speak_emote = list("screeches")
+	butcher_results = list(
+		/obj/item/food/meat/slab/chicken = 4,
+		/obj/item/stack/sheet/bone = 2,
+	)
 	ai_controller = /datum/ai_controller/basic_controller/raptor
 	///can this mob breed
 	var/can_breed = TRUE
@@ -67,12 +71,18 @@ GLOBAL_LIST_EMPTY(raptor_population)
 
 /mob/living/basic/raptor/Initialize(mapload)
 	. = ..()
-	if(SSmapping.current_map.minetype == "iceland" || SSmapping.is_planetary()) // DOPPLER STATION EDIT, old code: if(SSmapping.is_planetary())
+	if(SSmapping.current_map.minetype == MINETYPE_ICELAND || SSmapping.is_planetary()) // DOPPLER STATION EDIT, old code: if(SSmapping.is_planetary())
 		change_offsets = FALSE
 		icon = 'icons/mob/simple/lavaland/raptor_icebox.dmi'
 
 	AddElement(/datum/element/wears_collar)
 	add_traits(list(TRAIT_LAVA_IMMUNE, TRAIT_ASHSTORM_IMMUNE, TRAIT_SNOWSTORM_IMMUNE), INNATE_TRAIT)
+	AddElement(\
+		/datum/element/crusher_loot,\
+		trophy_type = /obj/item/crusher_trophy/raptor_feather,\
+		drop_mod = 100,\
+		drop_immediately = FALSE,\
+	)
 
 	if(!mapload)
 		GLOB.raptor_population += REF(src)

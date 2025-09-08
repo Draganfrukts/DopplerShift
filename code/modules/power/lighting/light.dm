@@ -347,7 +347,7 @@
 
 // attack with item - insert light (if right type), otherwise try to break the light
 
-/obj/machinery/light/attackby(obj/item/tool, mob/living/user, list/modifiers)
+/obj/machinery/light/attackby(obj/item/tool, mob/living/user, list/modifiers, list/attack_modifiers)
 	// attempt to insert light
 	if(istype(tool, /obj/item/light))
 		if(status == LIGHT_OK)
@@ -429,14 +429,17 @@
 		real_cell.forceMove(new_light)
 		cell = null
 
-/obj/machinery/light/attacked_by(obj/item/attacking_object, mob/living/user)
-	..()
+/obj/machinery/light/attacked_by(obj/item/attacking_object, mob/living/user, list/modifiers, list/attack_modifiers)
+	. = ..()
+	if(. <= 0)
+		return
 	if(status != LIGHT_BROKEN && status != LIGHT_EMPTY)
 		return
 	if(!on || !(attacking_object.obj_flags & CONDUCTS_ELECTRICITY))
 		return
-	if(prob(12))
-		electrocute_mob(user, get_area(src), src, 0.3, TRUE)
+	if(!prob(12))
+		return
+	electrocute_mob(user, get_area(src), src, 0.3, TRUE)
 
 /obj/machinery/light/take_damage(damage_amount, damage_type = BRUTE, damage_flag = "", sound_effect = TRUE, attack_dir, armour_penetration = 0)
 	. = ..()
@@ -497,25 +500,26 @@
 		)
 	return TRUE
 
-
 /obj/machinery/light/proc/flicker(amount = rand(10, 20))
 	set waitfor = FALSE
-	if(flickering)
+	if(flickering || !on || status != LIGHT_OK)
 		return
+
+	. = TRUE // did we actually flicker? Send this now because we expect immediate response, before sleeping.
 	flickering = TRUE
-	if(on && status == LIGHT_OK)
-		for(var/i in 1 to amount)
-			if(status != LIGHT_OK || !has_power())
-				break
-			on = !on
-			update(FALSE)
-			sleep(rand(5, 15))
-		if(has_power())
-			on = (status == LIGHT_OK)
-		else
-			on = FALSE
+	for(var/i in 1 to amount)
+		if(status != LIGHT_OK || !has_power())
+			break
+		on = !on
 		update(FALSE)
-		. = TRUE //did we actually flicker?
+		stoplag(rand(0.5 SECONDS, 1.5 SECONDS))
+
+	if(has_power())
+		on = (status == LIGHT_OK)
+	else
+		on = FALSE
+
+	update(FALSE)
 	flickering = FALSE
 
 // ai attack - make lights flicker, because why not
@@ -575,7 +579,7 @@
 
 	if(protected || HAS_TRAIT(user, TRAIT_RESISTHEAT) || HAS_TRAIT(user, TRAIT_RESISTHEATHANDS))
 		to_chat(user, span_notice("You remove the light [fitting]."))
-	else if(istype(user) && user.dna.check_mutation(/datum/mutation/human/telekinesis))
+	else if(istype(user) && user.dna.check_mutation(/datum/mutation/telekinesis))
 		to_chat(user, span_notice("You telekinetically remove the light [fitting]."))
 	else
 		var/obj/item/bodypart/affecting = user.get_active_hand()

@@ -29,7 +29,10 @@
 		"dropper",
 		"pillbottle",
 		"xlarge_beaker",
+		"organ_jar",
 		"jerrycan",
+		"reflex_hammer",
+		"blood_scanner",
 	)
 	experiments_to_unlock = list(
 		/datum/experiment/autopsy/human,
@@ -79,6 +82,8 @@
 		"defibmount",
 		"medicalbed_emergency",
 		"piercesyringe",
+		"diode_disk_healing",
+		"diode_disk_sanity",
 		"pacification_chip", //DOPPLER EDIT ADDITION
 		"pacification_lockchip", //DOPPLER EDIT ADDITION
 	)

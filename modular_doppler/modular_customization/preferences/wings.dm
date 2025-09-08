@@ -10,22 +10,22 @@
 	///	This variable is read by the regenerate_organs() proc to know what organ subtype to give
 	var/wing_type = NO_VARIATION
 
-/datum/species/regenerate_organs(mob/living/carbon/target, datum/species/old_species, replace_current = TRUE, list/excluded_zones, visual_only = FALSE)
+/datum/species/regenerate_organs(mob/living/carbon/target, datum/species/old_species, replace_current = TRUE, list/excluded_zones, visual_only = FALSE, replace_missing = TRUE)
 	. = ..()
 	if(target == null)
 		return
 	if(!ishuman(target))
 		return
 
-	if(target.dna.features["moth_wings"] && !(type in GLOB.species_blacklist_no_mutant))
+	if(target.dna.features[FEATURE_MOTH_WINGS] && !(type in GLOB.species_blacklist_no_mutant))
 		if(target.dna.wing_type == NO_VARIATION)
 			return .
-		if((target.dna.features["moth_wings"] != /datum/sprite_accessory/moth_wings/none::name && target.dna.features["moth_wings"] != /datum/sprite_accessory/blank::name))
+		if((target.dna.features[FEATURE_MOTH_WINGS] != /datum/sprite_accessory/moth_wings/none::name && target.dna.features["moth_wings"] != /datum/sprite_accessory/blank::name))
 			var/obj/item/organ/replacement = SSwardrobe.provide_type(/obj/item/organ/wings/moth)
 			replacement.Insert(target, special = TRUE, movement_flags = DELETE_IF_REPLACED)
 			return .
-	if(target.dna.features["wings"] && !(type in GLOB.species_blacklist_no_mutant))
-		if(target.dna.features["wings"] != /datum/sprite_accessory/wings_more/none::name && target.dna.features["wings"] != /datum/sprite_accessory/blank::name)
+	if(target.dna.features[FEATURE_WINGS] && !(type in GLOB.species_blacklist_no_mutant))
+		if(target.dna.features[FEATURE_WINGS] != /datum/sprite_accessory/wings_more/none::name && target.dna.features["wings"] != /datum/sprite_accessory/blank::name)
 			var/obj/item/organ/replacement = SSwardrobe.provide_type(/obj/item/organ/wings/more)
 			replacement.Insert(target, special = TRUE, movement_flags = DELETE_IF_REPLACED)
 			return .

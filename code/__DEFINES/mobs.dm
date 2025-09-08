@@ -58,6 +58,29 @@
 #define BLOOD_TYPE_SYNTHETIC "CL"
 #define BLOOD_TYPE_HEMOPHAGE "COR"
 
+// Blood exposure behavior flag defines
+/// Add our DNA to turfs/mobs/items, does not correlate with adding decals/overlays
+/// mob/turf/item flags will add DNA when triggered even if this flag is false
+#define BLOOD_ADD_DNA (1<<0)
+/// Cover the entire mob in *visible* blood
+#define BLOOD_COVER_MOBS (1<<1)
+/// Create blood splashes and trails on floors, does not affect gibs creation
+#define BLOOD_COVER_TURFS (1<<2)
+/// Cover items in ourselves
+#define BLOOD_COVER_ITEMS (1<<3)
+/// Usually you want all COVER flags together or none at all
+#define BLOOD_COVER_ALL (BLOOD_COVER_MOBS | BLOOD_COVER_TURFS | BLOOD_COVER_ITEMS)
+/// Transfer blood immunities and viruses to exposed mobs
+#define BLOOD_TRANSFER_VIRAL_DATA (1<<4)
+
+// Bleed check results
+/// We cannot bleed (here, or in general) at all
+#define BLEED_NONE 0
+/// We cannot make a splatter, but we can add our DNA
+#define BLEED_ADD_DNA 1
+/// We can bleed just fine
+#define BLEED_SPLATTER 2
+
 //Sizes of mobs, used by mob/living/var/mob_size
 #define MOB_SIZE_TINY 0
 #define MOB_SIZE_SMALL 1
@@ -129,6 +152,8 @@
 #define BODYTYPE_PLANT (1<<6)
 //This limb is shadowy and will regen if shadowheal is active
 #define BODYTYPE_SHADOW (1<<7)
+//This limb is a ghost limb and can phase through walls.
+#define BODYTYPE_GHOST (1<<8)
 
 // Bodyshape defines for how things can be worn, i.e., what "shape" the mob sprite is
 ///The limb fits the human mold. This is not meant to be literal, if the sprite "fits" on a human, it is "humanoid", regardless of origin.
@@ -173,11 +198,14 @@
 #define SPECIES_DULLAHAN "dullahan"
 #define SPECIES_ETHEREAL "ethereal"
 #define SPECIES_ETHEREAL_LUSTROUS "lustrous"
+#define SPECIES_GHOST "ghost"
+#define SPECIES_GOLEM "golem"
 #define SPECIES_FELINE "felinid"
 #define SPECIES_FLYPERSON "fly"
 #define SPECIES_HUMAN "human"
 #define SPECIES_JELLYPERSON "jelly"
 #define SPECIES_SLIMEPERSON "slime"
+#define SPECIES_SPIRIT "spirit"
 #define SPECIES_LUMINESCENT "luminescent"
 #define SPECIES_STARGAZER "stargazer"
 #define SPECIES_LIZARD "lizard"
@@ -223,7 +251,7 @@
 #define DIGITIGRADE_LEGS "Digitigrade Legs"
 
 // Health/damage defines
-#define MAX_LIVING_HEALTH 100
+#define MAX_LIVING_HEALTH 150 //DOPPLER EDIT CHANGE - ORIGINAL: MAX_LIVING_HEALTH 100
 
 //for determining which type of heartbeat sound is playing
 ///Heartbeat is beating fast for hard crit
@@ -235,6 +263,9 @@
 
 #define HUMAN_MAX_OXYLOSS 3
 #define HUMAN_CRIT_MAX_OXYLOSS (SSMOBS_DT/3)
+
+/// Combined brute and burn damage states on a human's head after which they become disfigured
+#define HUMAN_DISFIGURATION_HEAD_DAMAGE_STATES 3
 
 #define HEAT_DAMAGE_LEVEL_1 1 //Amount of damage applied when your body temperature just passes the 360.15k safety point
 #define HEAT_DAMAGE_LEVEL_2 1.5 //Amount of damage applied when your body temperature passes the 400K point
@@ -255,6 +286,7 @@
 
 //Brain Damage defines
 #define BRAIN_DAMAGE_MILD 20
+#define BRAIN_DAMAGE_ASYNC_BLINKING 60
 #define BRAIN_DAMAGE_SEVERE 100
 #define BRAIN_DAMAGE_DEATH 200
 
@@ -459,14 +491,14 @@
 #define OFFSET_HELD "held"
 
 //MINOR TWEAKS/MISC
-#define AGE_MIN 18 //youngest a character can be //DOPPLER EDIT was 17
+#define AGE_MIN 18 //youngest a character can be
 #define AGE_MAX 250 //oldest a character can be //DOPPLER EDIT was 85
 #define AGE_MINOR 21 //legal age of space drinking and smoking //DOPPLER EDIT was 20
 #define WIZARD_AGE_MIN 30 //youngest a wizard can be
 #define APPRENTICE_AGE_MIN 29 //youngest an apprentice can be
 #define SHOES_SLOWDOWN 0 //How much shoes slow you down by default. Negative values speed you up
 #define POCKET_STRIP_DELAY (4 SECONDS) //time taken to search somebody's pockets
-#define DOOR_CRUSH_DAMAGE 15 //the amount of damage that airlocks deal when they crush you
+#define DOOR_CRUSH_DAMAGE 20 //the amount of damage that airlocks deal when they crush you
 
 #define HUNGER_FACTOR 0.05 //factor at which mob nutrition decreases
 #define ETHEREAL_DISCHARGE_RATE (1e-3 * STANDARD_ETHEREAL_CHARGE * 0.75) // Rate at which ethereal stomach charge decreases. DOPPLER EDIT ORIGINAL: ETHEREAL_DISCHARGE_RATE (1e-3 * STANDARD_ETHEREAL_CHARGE)
@@ -707,27 +739,29 @@ GLOBAL_LIST_INIT(human_heights_to_offsets, list(
 /// Total number of layers for mob overlays
 /// KEEP THIS UP-TO-DATE OR SHIT WILL BREAK
 /// Also consider updating layers_to_offset
-#define TOTAL_LAYERS 36
+#define TOTAL_LAYERS 38
 /// Mutations layer - Tk headglows, cold resistance glow, etc
-#define MUTATIONS_LAYER 36
+#define MUTATIONS_LAYER 37
 /// Mutantrace features (tail when looking south) that must appear behind the body parts
-#define BODY_BEHIND_LAYER 35
+#define BODY_BEHIND_LAYER 36
 /// DOPPLER SHIFT ADDITION BEGIN
-#define BODY_BEHIND_LAYER_2 34.99
-#define BODY_BEHIND_LAYER_3 34.98
+#define BODY_BEHIND_LAYER_2 35.99
+#define BODY_BEHIND_LAYER_3 35.98
 /// DOPPLER SHIFT ADDITION END
 /// Layer for bodyparts that should appear behind every other bodypart - Mostly, legs when facing WEST or EAST
-#define BODYPARTS_LOW_LAYER 34
+#define BODYPARTS_LOW_LAYER 35
 /// Layer for most bodyparts, appears above BODYPARTS_LOW_LAYER and below BODYPARTS_HIGH_LAYER
-#define BODYPARTS_LAYER 33
+#define BODYPARTS_LAYER 34
 /// Mutantrace features (snout, body markings) that must appear above the body parts
-#define BODY_ADJ_LAYER 32
+#define BODY_ADJ_LAYER 33
 /// DOPPLER SHIFT ADDITION BEGIN
-#define BODY_ADJ_LAYER_2 31.99
-#define BODY_ADJ_LAYER_3 31.98
+#define BODY_ADJ_LAYER_2 32.99
+#define BODY_ADJ_LAYER_3 32.98
 /// DOPPLER SHIFT ADDITION END
-/// Underwear, undershirts, socks, eyes, lips(makeup)
-#define BODY_LAYER 31
+/// Underwear, undershirts, socks
+#define BODY_LAYER 32
+/// Eyes and eyelids
+#define EYES_LAYER 31
 /// Mutations that should appear above body, body_adj and bodyparts layer (e.g. laser eyes)
 #define FRONT_MUTATIONS_LAYER 30
 /// Damage indicators (cuts and burns)
@@ -757,7 +791,7 @@ GLOBAL_LIST_INIT(human_heights_to_offsets, list(
 /// Layer for bodyparts that should appear above every other bodypart - Currently only used for hands
 #define BODYPARTS_HIGH_LAYER 25
 /// DOPPLER SHIFT ADDITION BEGIN - For hand markings :3c
-#define BODY_HAND_LAYER 23.99
+#define BODY_HAND_LAYER 24.99
 /// DOPPLER SHIFT ADDITION END
 /// Gloves layer
 #define GLOVES_LAYER 24
@@ -849,7 +883,8 @@ GLOBAL_LIST_INIT(layers_to_offset, list(
 	// to show how many filters are added at a glance
 	// BACK_LAYER (backpacks are big)
 	// BODYPARTS_HIGH_LAYER (arms)
-	// BODY_LAYER (body markings (full body), underwear (full body), eyes)
+	// BODY_LAYER (body markings (full body), underwear (full body))
+	// EYES_LAYER,
 	// BODY_ADJ_LAYER (external organs like wings)
 	// BODY_BEHIND_LAYER (external organs like wings)
 	// BODY_FRONT_LAYER (external organs like wings)
@@ -970,6 +1005,8 @@ GLOBAL_LIST_INIT(layers_to_offset, list(
 #define VOMIT_CATEGORY_DEFAULT (MOB_VOMIT_MESSAGE | MOB_VOMIT_HARM | MOB_VOMIT_STUN)
 /// The vomit you've all come to know and love, but with a little extra "spice" (blood)
 #define VOMIT_CATEGORY_BLOOD (VOMIT_CATEGORY_DEFAULT | MOB_VOMIT_BLOOD)
+/// The bloody vomit, but without the stunning
+#define VOMIT_CATEGORY_BLOOD_STUNLESS (VOMIT_CATEGORY_BLOOD & ~MOB_VOMIT_STUN)
 /// Another vomit variant that causes you to get knocked down instead of just only getting a stun. Standard otherwise.
 #define VOMIT_CATEGORY_KNOCKDOWN (MOB_VOMIT_MESSAGE | MOB_VOMIT_HARM | MOB_VOMIT_KNOCKDOWN)
 
@@ -997,7 +1034,7 @@ GLOBAL_LIST_INIT(layers_to_offset, list(
 #define HEAL_LIMBS (1<<6)
 /// Heals all organs from failing.
 #define HEAL_ORGANS (1<<7)
-/// A "super" heal organs, this refreshes all organs entirely, deleting old and replacing them with new.
+/// replaces any organ with ORGAN_HAZARDOUS in organ_flags with species defaults
 #define HEAL_REFRESH_ORGANS (1<<8)
 /// Removes all wounds.
 #define HEAL_WOUNDS (1<<9)

@@ -3,20 +3,20 @@
 	name = "frills"
 
 /datum/bodypart_overlay/mutant/frills
-	layers = EXTERNAL_ADJACENT | EXTERNAL_ADJACENT_2 | EXTERNAL_ADJACENT_3
+	layers = EXTERNAL_FRONT | EXTERNAL_FRONT_2 | EXTERNAL_FRONT_3
 
 /datum/bodypart_overlay/mutant/frills/color_image(image/overlay, draw_layer, obj/item/bodypart/limb)
 	if(limb == null)
 		return ..()
 	if(limb.owner == null)
 		return ..()
-	if(draw_layer == bitflag_to_layer(EXTERNAL_ADJACENT))
+	if(draw_layer == bitflag_to_layer(EXTERNAL_FRONT))
 		overlay.color = limb.owner.dna.features["frills_color_1"]
 		return overlay
-	else if(draw_layer == bitflag_to_layer(EXTERNAL_ADJACENT_2))
+	else if(draw_layer == bitflag_to_layer(EXTERNAL_FRONT_2))
 		overlay.color = limb.owner.dna.features["frills_color_2"]
 		return overlay
-	else if(draw_layer == bitflag_to_layer(EXTERNAL_ADJACENT_3))
+	else if(draw_layer == bitflag_to_layer(EXTERNAL_FRONT_3))
 		overlay.color = limb.owner.dna.features["frills_color_3"]
 		return overlay
 	return ..()
@@ -52,12 +52,12 @@
 	if(sprite_accessory.icon_state != "none")
 		if(icon_exists(sprite_accessory.icon, "m_frills_[sprite_accessory.icon_state]_ADJ"))
 			var/datum/universal_icon/accessory_icon = uni_icon(sprite_accessory.icon, "m_frills_[sprite_accessory.icon_state]_ADJ")
-			accessory_icon.shift(NORTH, 0, ICON_SIZE_X, ICON_SIZE_Y)
+			accessory_icon.shift(NORTH, 0)
 			accessory_icon.blend_color(COLOR_WEBSAFE_DARK_GRAY, ICON_MULTIPLY)
 			final_icon.blend_icon(accessory_icon, ICON_OVERLAY)
 		if(icon_exists(sprite_accessory.icon, "m_frills_[sprite_accessory.icon_state]_FRONT"))
 			var/datum/universal_icon/accessory_icon = uni_icon(sprite_accessory.icon, "m_frills_[sprite_accessory.icon_state]_FRONT")
-			accessory_icon.shift(NORTH, 0, ICON_SIZE_X, ICON_SIZE_Y)
+			accessory_icon.shift(NORTH, 0)
 			accessory_icon.blend_color(COLOR_WEBSAFE_DARK_GRAY, ICON_MULTIPLY)
 			final_icon.blend_icon(accessory_icon, ICON_OVERLAY)
 
@@ -66,7 +66,7 @@
 
 	return final_icon
 
-/datum/species/regenerate_organs(mob/living/carbon/target, datum/species/old_species, replace_current = TRUE, list/excluded_zones, visual_only = FALSE)
+/datum/species/regenerate_organs(mob/living/carbon/target, datum/species/old_species, replace_current = TRUE, list/excluded_zones, visual_only = FALSE, replace_missing = TRUE)
 	. = ..()
 	if(target.dna.features["frills"] && !(type in GLOB.species_blacklist_no_mutant))
 		if(target.dna.features["frills"] != /datum/sprite_accessory/frills/none::name && target.dna.features["frills"] != /datum/sprite_accessory/blank::name)
