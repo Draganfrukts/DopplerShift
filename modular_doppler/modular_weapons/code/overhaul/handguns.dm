@@ -27,13 +27,12 @@
 	. += span_notice("Xin-Jang Armories' show pony, the 'Mk. IV Osprey Field Pistol' - originally known as the Type-15 - is a single action, tilting barrel semi-automatic pistol with a proprietary recoil mitigation system.\
 	The Osprey is significantly larger and heavier than other contemporary military pistols, earning it a favored spot with exoskeleton users and pretentious mercenaries above all.\
 	The proprietary 7.5×30mm cartridge is claimed to have an effective range—in terms of accuracy and terminal ballistics—of at least 100 meters for targets of up to 150 kg while maintaining relatively low recoil and good controllability.\
-	This particular model, the Osprey Longslide, is a common choice for criminals and users of large frames due to it's massive profile and it's menacing presence.")
+	This particular model, the Osprey Longslide, is a common choice for criminals and users of large frames due to its massive profile and menacing presence.")
 
 /obj/item/gun/ballistic/automatic/pistol/clandestine/fisher
-	name = "\improper Ansem/SC pistol"
-	desc = "A modified variant of the Ansem, spiritual successor to the Makarov, featuring an integral suppressor and push-button trigger on the grip \
-	for an underbarrel-mounted disruptor, similar in operation to the standalone SC/FISHER. Chambered in 10mm."
-	desc_controls = "Right-click to use the underbarrel disruptor. Two shots maximum between self-charges."
+	name = "\improper Osprey Specialist pistol"
+	desc = "An Osprey SSP pistol fitted with a light-disrupting module. Chambered in 7.5mm."
+	desc_controls = "Use your right mouse button to trigger the light disruptor up to two times before it automatically recharges."
 	icon_state = "pistol_evil_fisher"
 	suppressed = TRUE
 	can_suppress = FALSE
@@ -42,9 +41,27 @@
 
 /obj/item/gun/ballistic/automatic/pistol/clandestine/fisher/examine_more(mob/user)
 	. = ..()
-	. += span_notice("The Ansem/SC is a Scarborough Arms-manufactured overhaul suite for the also Scarborough Arms-manufactured Ansem handgun, designed for special \
-	operators who like to operate operationally, and/or people who really, really hate lightbulbs, and tend to fight people who really like lightbulbs. \
-	The slide is lengthened and has an integrated suppressor, while a compact kinetic light disruptor was mounted underneath the barrel. \
-	Scarborough Arms has never actually officially responded to allegations that they're involved with the modification and/or manufacture \
-	of the SC/FISHER or similar disruptor weapons. Operators are reminded that kinetic light disruptors do not actually physically harm targets.<br>\
-	Caveat emptor.")
+	. += span_notice("Steloj Equipment's Osprey SSP is a single action, tilting barrel semi-automatic pistol with a proprietary recoil mitigation system based on Xin-Jang Armories' Type-15/Mk. IV Osprey.\
+	The Osprey is significantly larger and heavier than other contemporary military pistols. This specific variant has an underbarrel light disruptor that can kill electric light sources with relative ease.\
+	The proprietary 7.5×30mm cartridge is claimed to have an effective range—in terms of accuracy and terminal ballistics—of at least 100 meters for targets of up to 150 kg while maintaining relatively low recoil and good controllability.\
+	This particular model, the Steloj Specialist Pistol, is often used to scramble synthetic light sensors for security personnel in factories - though there's no telling what private owenrs get up to with it.")
+
+/obj/item/gun/ballistic/automatic/pistol/m1911
+	name = "\improper Hawk pistol"
+	desc = "A cheap and ancient pistol for concealed firepower on a tight budget. Chambered in 11mm, you deserve better."
+
+/obj/item/gun/ballistic/automatic/pistol/m1911/examine_more(mob/user)
+	. = ..()
+	. += span_notice("The Hawk-2A is a reproduction of the Model 1911 pistol with improved internals and weight. Some swear by it, saying it's a completely fine weapon in the current year.\
+	Opinionated users will argue with you that it's the best handgun ever made, no matter how mechanically superior literally every other weapon on the market is nowadays.\
+	Perhaps the only truly good thing about this weapon is that it's chambered in 11.4x24mm Vico, so you can be sure that a target will fall before you're out of your whopping seven bullets.\
+	No matter how many people on NTNet post pictures of super cool army soldier guys with this gun painted tan, just remember that the Mk. I Stalwart costs around 12% more and comes with a cleaning kit and manual.\
+	And from a factory. Not second-hand from some dude in Prox-B who says it was in the reclamation war.")		//If this funny little quip somehow bothers you, I need U to turn that frown upside down.
+
+/obj/item/gun/ballistic/automatic/pistol/aps
+	name = "\improper Rafiq machine pistol"
+	desc = "A relatively new, relatively expensive pistol that looks and functions a little oddly. Chambered in 6mm, capable of automatic fire."
+
+/obj/item/gun/ballistic/automatic/pistol/aps/examine_more(mob/user)
+	. = ..()
+	. += span_notice("Výrobce's debut into the small arms market three decades back came with the since renowned Rafiq-α, an unique fixed barrel ")
